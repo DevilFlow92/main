@@ -60,7 +60,7 @@ def TwoImagesComparize(
         file1: str,
         file2: str,
         model: str = "hog",
-        name: str = None,                       
+        originalname: str = None,                       
 ):
 
     image1 = face_recognition.load_image_file(file1)
@@ -80,10 +80,13 @@ def TwoImagesComparize(
 
     if results[0]:
         resume = "Le facce sono uguali"
-        if name is None:
-            name = "Person 1"
+        if originalname is None:
+            originalname = "Person Matched"
+        name = originalname
     else:
         resume = "Le facce sono diverse"
+        if originalname is None:
+            originalname = "Person NOT Matched"
         name = "No match"
 
     print(resume)
@@ -128,13 +131,58 @@ def TwoImagesComparize(
     #plt.show()
 
     
-def OneImageComparize():
-    print("To Do.")
+def OneImageComparize(
+        image_location: str,
+        model: str = "hog",
+        originalname: str = None,
+):
+    input_image = face_recognition.load_image_file(image_location)
 
+    input_face_locations = face_recognition.face_locations(
+        input_image, model=model
+    )
+    input_face_encodings = face_recognition.face_encodings(input_image, input_face_locations)
+
+    face_encodings1 = input_face_encodings[0]
+    face_encodings2 = input_face_encodings[1]
+
+    results = face_recognition.compare_faces(
+        [face_encodings1],
+        face_encodings2,
+        #tolerance=0.55,
+    )
+    if results[0]:
+        resume = "Identificazione avvenuta con successo"
+        if originalname is None:
+            originalname = "Person matched"
+        name = originalname
+    else:
+        resume = "Identificazione da verifcare. Le facce sono diverse"
+        if originalname is None:
+            originalname = "Person NOT Matched"
+        name = "No match"
+
+    print(resume)
+    
+    pillow_image = Image.fromarray(input_image)
+    draw = ImageDraw.Draw(pillow_image)
+
+    for bounding_box, encoding in zip(
+        input_face_locations, input_face_encodings
+    ):
+        print(encoding)
+        _display_face(draw,bounding_box,name)
+
+    del draw
+    now = datetime.datetime.now()
+    ct = now.strftime("%Y%m%d%H%M")
+    pillow_image.save(f'outputs/{ct}_{originalname}.png')
+    #pillow_image.show()
+    
 
 if __name__ == "__main__":
     if args.TwoImages:
         TwoImagesComparize(file1=args.im1, file2=args.im2, name=args.name)
     if args.OneImage:
-        OneImageComparize()
+        OneImageComparize(image_location=args.im1, model=args.m, name=args.name)
 
