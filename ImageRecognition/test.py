@@ -5,7 +5,19 @@ from collections import Counter
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import style
+import argparse
+
 style.use("ggplot")
+
+parser = argparse.ArgumentParser(description="Test Image Recognition")
+parser.add_argument("--create", action="store_true",help="Create a model to recognize numbers.")
+parser.add_argument("--test", action="store_true", help="Test the model with guess a number into an image")
+parser.add_argument(
+    "-f",
+    action="store",
+    help="Path to an image with a number to guess"
+)
+args = parser.parse_args()
 
 def createExamples():
     numberArrayExamples = open('numArEx.txt','a')
@@ -57,6 +69,7 @@ def whatNumIsThis(filePath):
 
     i = Image.open(filePath)
     iar = np.array(i)
+    iar = threshold(iar)
     iarl = iar.tolist()
 
     inQuestion = str(iarl)
@@ -92,7 +105,6 @@ def whatNumIsThis(filePath):
         graphY.append(m[eachThing])
         ylimi = m[eachThing]        
     
-    fig = plt.figure()
     ax1 = plt.subplot2grid((4,4), (0,0), rowspan=1, colspan=4)
     ax2 = plt.subplot2grid((4,4), (1,0), rowspan=3, colspan=4)
 
@@ -106,42 +118,8 @@ def whatNumIsThis(filePath):
     plt.show()
 
 
-'''
-i = Image.open('images/numbers/0.1.png')
-iar = np.asarray(i)
-iar = iar.copy() # i use copy because with new versions of numpy is not possible to doing math on original images
-
-i2 = Image.open('images/numbers/y0.4.png')
-iar2 = np.asarray(i2)
-iar2 = iar2.copy()
-
-i3 = Image.open('images/numbers/y0.5.png')
-iar3 = np.asarray(i3)
-iar3 = iar3.copy()
-
-i4 = Image.open('images/sentdex.png')
-iar4 = np.asarray(i4)
-iar4 = iar4.copy()
-
-iar = threshold(iar)
-iar2 = threshold(iar2)
-iar3 = threshold(iar3)
-iar4 = threshold(iar4)
-
-
-fig = plt.figure()
-ax1 = plt.subplot2grid((8,6),(0,0), rowspan=4, colspan=3)
-ax2 = plt.subplot2grid((8,6),(4,0), rowspan=4, colspan=3)
-ax3 = plt.subplot2grid((8,6),(0,3), rowspan=4, colspan=3)
-ax4 = plt.subplot2grid((8,6),(4,3), rowspan=4, colspan=3)
-
-ax1.imshow(iar)
-ax2.imshow(iar2)
-ax3.imshow(iar3)
-ax4.imshow(iar4)
-
-plt.show()
-'''
-
-createExamples()
-whatNumIsThis('images/test.png')
+if __name__ == "__main__":
+    if args.create:
+        createExamples()
+    if args.test:
+        whatNumIsThis(filePath=args.f)
