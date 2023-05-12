@@ -1,0 +1,40 @@
+{
+	"ScratchName":"CESAM_AZ_UfficioBonifici_StampPDF",
+	"SQLConnection":{
+		"istanza_OLD":"BTSQLCL05",
+		"istanzaProdDotNet_OLD":"BTSQLCL05\\BTSQLCL05",
+		"istanza":"db-clc-prodbt",
+		"istanzaProdDotNet":"db-clc-prodbt",
+		"database":"CLC_Cesam",
+		"istanzaSetup":"db-clc-setupbt",
+		"istanzaTest":"db-clc-testest"
+	},
+	"mailing":{
+		"smtp":"172.24.206.182",
+		"from":"cesam_az_stamp_pdf@gruppomol.it",
+		"to":["lorenzo.fiori@gruppomol.it","nicola.deligia@gruppomol.it", "alessia.cadoni@gruppomol.it"],
+		"cc":["sos@azimut.cesamoffice.it"]
+	},
+	"WebAPI":{
+		"url":"https://backendservizi.produzionecesam.gmolapps.lcl/api/v2",
+		"urlTest":"https://backendservizi.testesternocesam.gmolapps.lcl/api/v2",
+		"user":"cesam_sistema",
+		"pwd":"hsagvd54DB-12",
+		"userTest":"cesam_sistema",
+		"pwdTest":"test",
+		"codCliente":"",
+		"codTipoIncarico":"",
+		"codArea":"",
+		"chiaveCliente":""
+	},
+	"Destinazione":{
+		"pathLocale":"E:\\Estrazioni AZ\\RICONCILIATORE\\FILE STAMPA",
+		"pathServer":"\\\\btfil01\\root\\Cesam\\Direzione Operativa\\Riconciliazione\\RICONCILIATI",
+		"pathServer_old":"\\\\btfiler12\\Data\\Qtask\\Riconciliati_Bonifici"
+	},
+	"GhostScript":{
+		"pathLocale":"C:\\Program Files\\gs\\gs9.50\\bin\\gswin64c.exe",
+		"pathServer":"C:\\Program Files\\gs\\gs9.50\\bin\\gswin64c.exe"
+	}
+}
+	

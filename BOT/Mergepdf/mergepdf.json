@@ -1,0 +1,8 @@
+﻿{
+	"itextsharp":{
+		"dllpath":"C:\\ScriptAdminRoot\\Modify\\itextsharp.dll"
+	},
+	"folder":{
+		"workdir": "E:\\Documenti\\MergePDF"
+	}
+}

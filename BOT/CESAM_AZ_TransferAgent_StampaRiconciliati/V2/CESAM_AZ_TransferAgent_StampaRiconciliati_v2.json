@@ -1,0 +1,33 @@
+{
+	"ScratchName":"CESAM_AZ_UfficioBonifici_RiconciliatoMovimento",
+	"SQLConnection":{
+		"istanza":"db-clc-prodbt",
+		"istanzaProdDotNet":"db-clc-prodbt",
+		"database":"CLC_Cesam",
+		"istanzaSetup":"db-clc-setupbt",
+		"istanzaTest":"db-clc-testest"
+	},
+	"mailing":{
+		"smtp":"172.24.206.182",
+		"from":"info.cesam@gruppomol.it",
+		"to":["lorenzo.fiori@gruppomol.it","nicola.deligia@gruppomol.it"],
+		"cc":["reportdpecesam@gruppomol.it"]
+	},
+	"WebAPI":{
+		"url":"https://backendservizi.produzionecesam.gmolapps.lcl/api/v2",
+		"urlTest":"https://backendservizi.testesternocesam.gmolapps.lcl/api/v2",
+		"user":"cesam_sistema",
+		"pwd":"hsagvd54DB-12",
+		"userTest":"cesam_sistema",
+		"pwdTest":"test",
+		"codCliente":"",
+		"codTipoIncarico":"",
+		"codArea":"",
+		"chiaveCliente":""
+	},
+	"Destinazione":{
+		"pathLocale":"E:\\Estrazioni AZ\\RICONCILIATORE\\FILE STAMPA",
+		"pathServer":"\\\\btfil01\\root\\Cesam\\Direzione Operativa\\Riconciliazione\\RICONCILIATI"
+	}
+}
+	

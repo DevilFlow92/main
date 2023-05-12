@@ -1,0 +1,273 @@
+USE CLC_Cesam
+GO
+
+DECLARE @DataDAL DATETIME = CAST(GETDATE() AS DATE)
+,@DataAL DATETIME = DATEADD(DAY,1,CAST(GETDATE() AS DATE))
+
+
+
+SELECT ti.IdIncarico
+,tm.IdMovimentoContoBancario
+,tm.DataConferma
+,tm.NotaAggiuntiva
+--,tm.Importo
+,CASE WHEN riconciliatomovimento.IdTransizione IS NOT NULL THEN 1 ELSE 0 END FlagRiconciliatoMovimento
+,CASE WHEN attributoElaboratoTA.IdTransizione IS not NULL THEN 1 ELSE 0 END FlagElaboratoTA
+,ti.CodStatoWorkflowIncarico
+,20606 CodStatoWorkflowIncaricoDestinazione
+,17473 CodAttributoIncaricoDestinazione
+FROM T_Incarico ti
+JOIN T_R_Incarico_MovimentoContoBancario trimcb ON ti.IdIncarico = trimcb.IdIncarico
+JOIN T_MovimentoContoBancario tm ON trimcb.IdMovimentoContoBancario = tm.IdMovimentoContoBancario
+AND tm.DataConferma >= @DataDAL 
+AND tm.DataConferma < @DataAL
+JOIN T_ContoBancarioPerAnno tcbpa ON tm.IdContoBancarioPerAnno = tcbpa.IdContoBancarioPerAnno
+AND anno >= 2020
+JOIN T_ContoBancario tcb ON tcbpa.IdContoBancario = tcb.IdContoBancario
+AND tcb.abi = '03479'
+AND tcb.Cab = '01600'
+AND tcb.NumeroConto = '802260103'
+
+OUTER APPLY (
+				SELECT TOP 1 lwix.IdTransizione
+                FROM L_WorkflowIncarico lwix
+				WHERE lwix.IdIncarico = ti.IdIncarico
+				AND lwix.CodStatoWorkflowIncaricoPartenza != lwix.CodStatoWorkflowIncaricoDestinazione
+				AND lwix.CodStatoWorkflowIncaricoDestinazione = 20606
+				AND lwix.DataTransizione >= @DataDAL 
+				AND lwix.DataTransizione < @DataAL
+) riconciliatomovimento
+
+OUTER APPLY (
+				SELECT TOP 1 lwix2.IdTransizione
+                FROM dbo.L_WorkflowIncarico lwix2
+				WHERE lwix2.IdIncarico = ti.IdIncarico
+				AND (lwix2.CodAttributoIncaricoPartenza IS NULL OR lwix2.CodAttributoIncaricoPartenza != lwix2.CodAttributoIncaricoDestinazione)
+				AND lwix2.CodAttributoIncaricoDestinazione = 17473
+				AND lwix2.DataTransizione >= @DataDAL 
+				AND lwix2.DataTransizione < @DataAL
+) attributoElaboratoTA
+
+WHERE ti.CodArea = 8
+AND ti.CodCliente = 23
+AND ti.CodTipoIncarico IN (83	--Sottoscrizioni/Versamenti FONDI Investimento
+											, 553	--Versamenti Aggiuntivi Lux - Zenith
+											, 540	--Sottoscrizioni Lux - Zenith
+											, 693   --Rata PAC
+											--, 580	--Sottoscrizioni Fondi - Zenith
+											--, 581	--Versamenti Aggiuntivi Fondi - Zenith
+										)
+AND (riconciliatomovimento.IdTransizione IS NULL OR attributoElaboratoTA.IdTransizione IS null )
+
+
+AND TI.IdIncarico IN (
+23317113
+,23350180
+,23349602
+,23344834
+,23344834
+,23342536
+,23354721
+,23329936
+,23350059
+,23327988
+,23339439
+,23340209
+,23334843
+,23346267
+,23354785
+,23354785
+,23324373
+,23330214
+,23333095
+,23344990
+,23344990
+,23333093
+,23345860
+,23333257
+,23349927
+,23350116
+,23346794
+,23347929
+,23346132
+,23333258
+,23346181
+,23346359
+,23348506
+,23348506
+,23346344
+,23346732
+,23347927
+,23347927
+,23323671
+,23340077
+,23348829
+,16435021
+,16409729
+,23347761
+,18124182
+,23231429
+,16435885
+,23231431
+,23347553
+,22903622
+,17668072
+,22116584
+,16435093
+,23119505
+,22001139
+,23314115
+,23322077
+,19336632
+,23339845
+,16655369
+,16367832
+,20713970
+,23328251
+,23348053
+,19385214
+,16901428
+,23335065
+,16372493
+,23346128
+,23345925
+,21045733
+,23336950
+,16721765
+,23349917
+,21061012
+,22471132
+,23344291
+,18135631
+,17047806
+,22464717
+,23119503
+,16435918
+,18665320
+,23141406
+,22928120
+,23340606
+,20335913
+,23327007
+,16712311
+,23348051
+,17822214
+,23340027
+,16435079
+,16435063
+,19919090
+,23321148
+,17804834
+,16892319
+,23340985
+,16720909
+,23342316
+,17587867
+,16435130
+,23341631
+,16425748
+,16656031
+,16656031
+,16435082
+,21737588
+,16396510
+,16890849
+,16435959
+,21001769
+,21061011
+,19736684
+,16425659
+,21059513
+,23242277
+,16656037
+,16435046
+,22270349
+,21001836
+,23348680
+,20713966
+,23321149
+,23344811
+,16435159
+,23290093
+,16425709
+,23350307
+,17507321
+,22427297
+,23136814
+,23348326
+,23271723
+,22270345
+,16435965
+,16435147
+,18124493
+,16721757
+,22464715
+,16435152
+,23348825
+,23347955
+,23335067
+,23347658
+,22070317
+,23348493
+,16425669
+,23316402
+,23316402
+,22883444
+,23361998
+,21416703
+,16435913
+,22001104
+,18816083
+,16435137
+,20311398
+,16435125
+,16447623
+,21045724
+,21415019
+,16435132
+,22951640
+,17521159
+,23341431
+,22922688
+,18207204
+,19735726
+,16435049
+,23240668
+,21415018
+,23347603
+,21415023
+,23329332
+,16736559
+,23342521
+,23031160
+,23347433
+,16425742
+,23346629
+,23346630
+,23348832
+,23349031
+,23349032
+,16372457
+,20904717
+,18830807
+,18410997
+,23353430
+,16435054
+,16435033
+,23354378
+,23346292
+,18830804
+,16900903
+,23141297
+,17221062
+,23336850
+,16720927
+,23346293
+
+
+)
+--AND ti.IdIncarico != 19749431
+
+
+
+
