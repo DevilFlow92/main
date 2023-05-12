@@ -4,26 +4,25 @@ import pickle
 from collections import Counter
 from PIL import Image, ImageDraw
 import argparse
+import time
 
 DEFAULT_ENCODINGS_PATH = Path("output/encodings.pkl")
+IMAGE_PATH = "E:/Immagini/DevilFlow92/face_recognizer"
+
 BUONDING_BOX_COLOR = "blue"
 TEXT_COLOR = "white"
+
 parser = argparse.ArgumentParser(description="Recognize faces in an image")
 
-
 parser.add_argument("--train", action="store_true", help="Train on input data")
-
 parser.add_argument("--validate", action="store_true", help="Validate trained model")
-
 parser.add_argument("--test", action="store_true", help="Test the model with an unknown image")
-
 parser.add_argument("-m", 
     action="store",
     default="hog",
     choices=["hog", "cnn"],
     help="Which model to use for training: hog (CPU), cnn (GPU)",                        
 )
-
 parser.add_argument("-f",
     action="store",
     help="Path to an image with an unknown face"
@@ -32,9 +31,10 @@ parser.add_argument("-f",
 
 args = parser.parse_args()
 
-Path("training").mkdir(exist_ok=True)
+Path(f"{IMAGE_PATH}/training").mkdir(exist_ok=True)
 Path("output").mkdir(exist_ok=True)
-Path("validation").mkdir(exist_ok=True)
+Path(f"{IMAGE_PATH}/validation").mkdir(exist_ok=True)
+
 
 #HOG (histogram of oriented gradients) -> https://pyimagesearch.com/2014/11/10/histogram-oriented-gradients-object-detection/
 #CNN (convolutional neural network) -> https://towardsdatascience.com/a-comprehensive-guide-to-convolutional-neural-networks-the-eli5-way-3bd2b1164a53
@@ -49,7 +49,7 @@ def encode_known_faces(
     '''
     names =[]
     encodings = []
-    for filepath in Path("training").glob("*/*"):
+    for filepath in Path(f"{IMAGE_PATH}/training").glob("*/*"):
         name = filepath.parent.name
         image = face_recognition.load_image_file(filepath)
 
@@ -67,7 +67,6 @@ def encode_known_faces(
             # here i add the names and their encodings to separate lists
             names.append(name)
             encodings.append(encoding)
-
     
     name_encodings = {"names": names, "encodings": encodings}
     with encodings_location.open(mode="wb") as f:
@@ -141,7 +140,7 @@ def recognize_faces(
 
 
 def validate(model: str= "hog"):
-    for filepath in Path("validation").rglob("*"):
+    for filepath in Path(f"{IMAGE_PATH}/validation").rglob("*"):
         if filepath.is_file():
             recognize_faces(
                 image_location=str(filepath.absolute()),

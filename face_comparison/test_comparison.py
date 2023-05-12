@@ -6,7 +6,7 @@ import datetime
 
 BOUNDING_BOX_COLOR = "blue"
 TEXT_COLOR = "white"
-IMAGE_PATH = "E:/Immagini/DeviFlow92/face_comparison"
+IMAGE_PATH = "E:/Immagini/DevilFlow92/face_comparison"
 
 parser = argparse.ArgumentParser(description="Recognize two faces")
 parser.add_argument("--TwoImages", action="store_true", help="Comparison of two faces in two image files. Requires arguments im1, im2")

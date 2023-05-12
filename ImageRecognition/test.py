@@ -8,15 +8,25 @@ from matplotlib import style
 import argparse
 
 style.use("ggplot")
+IMAGE_PATH = "E:/Immagini/DevilFlow92/ImageRecognition"
 
 parser = argparse.ArgumentParser(description="Test Image Recognition")
 parser.add_argument("--create", action="store_true",help="Create a model to recognize numbers.")
-parser.add_argument("--test", action="store_true", help="Test the model with guess a number into an image")
+parser.add_argument("--test", action="store_true", help="Test the model with guess a number into an image.")
+parser.add_argument(
+    "-FromImagedb",
+    action="store",
+    default='0',
+    choices=['1', '0'],
+    help="Set if the images is from imagedb path E:/Immagini/DevilFlow92/ImageRecognition/images."
+    
+    )
 parser.add_argument(
     "-f",
     action="store",
-    help="Path to an image with a number to guess"
+    help="Path to an image with a number to guess. Pass only image file if it is from imagedb path."
 )
+
 args = parser.parse_args()
 
 def createExamples():
@@ -27,7 +37,7 @@ def createExamples():
     for eachNum in numberWeHave:
         for eachVer in versionsWeHave:
             #print(str(eachNum)+'.'+str(eachVer))
-            imgFilePath = 'images/numbers/'+str(eachNum)+'.'+str(eachVer)+'.png'
+            imgFilePath = f'{IMAGE_PATH}/images/numbers/'+str(eachNum)+'.'+str(eachVer)+'.png'
             ei = Image.open(imgFilePath)
             eiar = np.array(ei)
             eiar = eiar.copy() # i use copy because with new versions of numpy is not possible to doing math on original images
@@ -62,7 +72,10 @@ def threshold(imageArray):
     return newAr
 
 
-def whatNumIsThis(filePath):
+def whatNumIsThis(filePath, from_imagedb = '0'):
+    if from_imagedb == '1':
+        filePath = f'{IMAGE_PATH}/images/{filePath}'
+
     matchedAr = []
     loadExamps = open('numArEx.txt','r').read()
     loadExamps = loadExamps.split('\n')
@@ -122,4 +135,4 @@ if __name__ == "__main__":
     if args.create:
         createExamples()
     if args.test:
-        whatNumIsThis(filePath=args.f)
+        whatNumIsThis(filePath=args.f,from_imagedb=args.FromImagedb)
