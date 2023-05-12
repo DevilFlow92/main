@@ -4,9 +4,9 @@ from PIL import Image, ImageDraw
 import matplotlib.pyplot as plt
 import datetime
 
-
 BOUNDING_BOX_COLOR = "blue"
 TEXT_COLOR = "white"
+IMAGE_PATH = "E:/Immagini/DeviFlow92/face_comparison"
 
 parser = argparse.ArgumentParser(description="Recognize two faces")
 parser.add_argument("--TwoImages", action="store_true", help="Comparison of two faces in two image files. Requires arguments im1, im2")
@@ -14,12 +14,12 @@ parser.add_argument("--OneImage", action="store_true", help="Comparison of two f
 parser.add_argument(
     "-im1",
     action="store",
-    help="Image path to process. Use / instead of \\",
+    help="Image path to process. Pass only image name. It has to be in path E:\Immagini\DeviFlow92\\face_comparison\images",
 )
 parser.add_argument(
     "-im2",
     action="store",
-    help="Image path to comparize with im1. Use / instead of \\",
+    help="Image path to comparize with im1. Pass only image name. It has to be in path E:\Immagini\DeviFlow92\\face_comparison\images",
 )
 parser.add_argument(
     "-name",
@@ -62,6 +62,8 @@ def TwoImagesComparize(
         model: str = "hog",
         originalname: str = None,                       
 ):
+    file1 = f"{IMAGE_PATH}/images/{file1}"
+    file2 = f"{IMAGE_PATH}/images/{file2}"
 
     image1 = face_recognition.load_image_file(file1)
     image2 = face_recognition.load_image_file(file2)
@@ -127,7 +129,7 @@ def TwoImagesComparize(
     
     now = datetime.datetime.now()
     ct = now.strftime("%Y%m%d%H%M")
-    plt.savefig(f'outputs/{ct}_{name}.png')
+    plt.savefig(f'{IMAGE_PATH}/outputs/{ct}_{name}.png')
     #plt.show()
 
     
@@ -136,6 +138,8 @@ def OneImageComparize(
         model: str = "hog",
         originalname: str = None,
 ):
+    image_location = f"{IMAGE_PATH}/images/{image_location}"
+
     input_image = face_recognition.load_image_file(image_location)
 
     input_face_locations = face_recognition.face_locations(
@@ -176,13 +180,13 @@ def OneImageComparize(
     del draw
     now = datetime.datetime.now()
     ct = now.strftime("%Y%m%d%H%M")
-    pillow_image.save(f'outputs/{ct}_{originalname}.png')
+    pillow_image.save(f'{IMAGE_PATH}/outputs/{ct}_{originalname}.png')
     #pillow_image.show()
     
 
 if __name__ == "__main__":
     if args.TwoImages:
-        TwoImagesComparize(file1=args.im1, file2=args.im2, name=args.name)
+        TwoImagesComparize(file1=args.im1, file2=args.im2, originalname=args.name)
     if args.OneImage:
-        OneImageComparize(image_location=args.im1, model=args.m, name=args.name)
+        OneImageComparize(image_location=args.im1, model=args.m, originalname=args.name)
 
