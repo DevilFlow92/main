@@ -1,17 +1,11 @@
 ﻿Clear-Host
 $error.Clear()
 
-$flagjobrataPAC = 1
-
-$jobRatePac = Start-Job { C:\ScriptAdminRoot\Execute\AZIMUT\RICONCILIATORE\CESAM_AZ_Riconciliatore_PAC\CESAM_AZ_Riconciliatore_PAC.ps1 }
-if($flagjobrataPAC -eq 1){ Wait-Job $jobRatePac}
-if($flagjobrataPAC -eq 1){ $receive_job_RatePac = Receive-Job $jobRatePac}
 
 $ErrorActionPreference = "stop"
 
 $jsonPath = $($MyInvocation.MyCommand.path) -replace "ps1", "json"
 $conf=gc $jsonPath | Out-String | ConvertFrom-Json
-
 
 
 $itextsharpdllpath = "$(Split-Path $($MyInvocation.MyCommand.path))\DLL\itextsharp.dll"
