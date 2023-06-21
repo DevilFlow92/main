@@ -1,19 +1,12 @@
-﻿
-$Error.Clear()
-
-$test = 0
-$mandamail = 0
+﻿$Error.Clear()
 
 $jsonPath = $($MyInvocation.MyCommand.path) -replace "ps1", "json"
-#$jsonPath = "C:\ScriptAdminRoot\Modify\PS_Script\CESAM_AZ_Import_Rendicontazione.json"
 
 $conf = Get-Content $jsonPath | Out-String | ConvertFrom-Json -Verbose
-
 
 $date = get-date -format yyyyMMdd
 $date2 = get-date -format yyyyMMdd
 $date_lag = '{0:yyyyMMdd}' -f [datetime](get-date).AddDays(-1)
-
 
 if((get-date).DayOfWeek -eq "Monday"){
     $date = '{0:yyyyMMdd}' -f [datetime](Get-Date).AddDays(-2)
@@ -21,13 +14,10 @@ if((get-date).DayOfWeek -eq "Monday"){
     $date_lag = '{0:yyMMdd}' -f [datetime](Get-Date).AddDays(-3)
 }
 
-
 $getAnno = [int] $(Get-Date -Format "yyyy")
 
 $csvlogfile = "$(Split-Path $($MyInvocation.MyCommand.path))\LISTE\$($Date)_ImportResults.csv"
 
-Get-Module -Name PSSQLQuery | ForEach-Object { Remove-Module -Name $_.Name }
-Import-Module PSSQLQuery
 
 #load winscp .NET assembly
 Add-type -Path $($conf.WinScp.dllpath)
@@ -41,22 +31,6 @@ $sessionOptions = New-Object WinSCP.SessionOptions -Property @{
     SshHostKeyFingerprint = $($conf.sftp.fingerprint)
 }
 
-
-# web-api config
-if ($test -eq 0) {
-    $user = $($conf.WebAPI.user)
-    $Password = $($conf.WebAPI.pwd)
-    $urlBase = $($conf.WebAPI.url)
-    $URI = $($conf.webservice.uri)
-    $url = $($conf.webservice.url)
-}
-else {
-    $user = $($conf.WebAPI.userTest)
-    $Password = $($conf.WebAPI.pwdTest)
-    $urlBase = $($conf.WebAPI.urlTest)
-    $URI = $($conf.webservice.uriTest)
-    $url = $($conf.webservice.urlTest)
-}
 
 $CodCliente = $($conf.WebAPI.codCliente)
 $CodTipoIncarico = $($conf.WebAPI.codTipoIncarico)
@@ -162,12 +136,6 @@ try {
     $session.open($sessionOptions)
 
 
-    # autenticate web-api
-    $headerToken = Invoke-RestMethod –Uri "$urlBase/Autenticazione/NomeHeaderTokenSessione" -Verbose
-    $credenziali = @{ Username = $User; Password = $Password } | ConvertTo-Json
-    $token = Invoke-RestMethod -ContentType "application/json" -Method Post -Uri "$urlBase/Autenticazione/Autentica" -Body $credenziali
-    $headers = @{"$headerToken" = $token }
-    $sessione = Invoke-RestMethod -ContentType "application/json" -Method Get -Uri "$urlBase/Autenticazione/Sessione" -Headers $headers
     if ($test -eq 0) { 
         # connect sql   
         $connSetup = Connect-SQLServer -Istance $($conf.SQLConnection.istanzaSetup) -Database $($conf.SQLConnection.database)  -TimeOut 20000

@@ -1,20 +1,4 @@
-﻿<#
-
-
-4. storicizzare tutte le riconciliazioni, in modo da non riproporle - anche se l'operatore le disassocia
-
-
-IMPORTANTE: 
-
--- aggiungere un ciclo che cicla su tutti gli incarichi associati ad una contabile e flag riconciliato = 0 and statusworkflow = 1 
-        su questi deve essere fatto update soltanto nella contabile associata - quindi modificare anche la sp di salvataggio per NON inserire nella TRincaricomovimentocontobancario
-
-cercare per #modificato per trovare le modifiche
-            #LS 22062020 != Mandato
-
-#>
-
-Clear-Host
+﻿Clear-Host
 $start = Get-Date
 
 $MessaggioErrore = $null
