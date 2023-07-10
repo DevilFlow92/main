@@ -6,7 +6,7 @@ from typing import Any, List, Tuple
 import sys
 sys.path.append('../')
 
-from ext.fromsecret import get_db_secret
+from jobs.fromsecret import get_db_secret
 from jobs import ReadCBI, ReadDB
 from validation import Coerce, Schema
 from validation.coerce import to_date, to_stripped_string

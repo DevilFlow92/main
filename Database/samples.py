@@ -1,6 +1,6 @@
 import pymysql
 import pandas as pd
-from jobs.evtl.load import get_db_secret
+from jobs.fromsecret import get_db_secret
 
 HOST, USER, PASSWORD, DB = get_db_secret('devilflow_main')
 
