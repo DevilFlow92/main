@@ -24,5 +24,10 @@ hvac
 pydantic
 schema
 Levenshtein
-ldap
 requests
+minio
+pysmb
+paramiko
+webdav3-cli
+boto3
+ftputil

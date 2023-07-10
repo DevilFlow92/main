@@ -1,8 +1,8 @@
 import pymysql
 import pandas as pd
-from fromsecret import get_db_secret
+from jobs.evtl.load import get_db_secret
 
-HOST, USER, PASSWORD, DB = get_db_secret('devilflow_sakila')
+HOST, USER, PASSWORD, DB = get_db_secret('devilflow_main')
 
 def mysqlconnection() -> tuple:
     conn = pymysql.connect(
@@ -50,18 +50,31 @@ def insert_film_actor(filepath):
     finally:
         conn.close()
 
-def truncate_actor():
+def insert_valute(filepath):
+    try:
+        conn,cursor = mysqlconnection()
+        data = pd.read_csv(filepath)
+        df = pd.DataFrame(data=data, columns=['Sigla', 'Etichetta'])
+
+        for row in df.itertuples():
+            query = "INSERT INTO D_Valuta (Etichetta, Sigla) values(%s,%s)"
+            val = (row.Etichetta, row.Sigla)
+            cursor.execute(query,val)
+
+        conn.commit()
+
+    finally:
+        conn.close()
+
+def truncatetable(table:str):
     try:
         conn, cursor = mysqlconnection()
-        cursor.execute("TRUNCATE TABLE actor")
+        query = f'TRUNCATE TABLE {table}'
+        cursor.execute(query)
         conn.commit()
     finally:
         conn.close()
 
-def truncate_film_actor():
-    try:
-        conn, cursor = mysqlconnection()
-        cursor.execute("TRUNCATE TABLE film_actor")
-        conn.commit()
-    finally:
-        conn.close()
+
+
+#insert_valute(filepath="C:\ScriptAdminRoot\Execute\main\ReadDB\\valute.csv")
