@@ -96,7 +96,7 @@ class MassiveInsert:
 
     def _write_row(self, values: DataRow) -> None:
         table = self.table
-        col_names = f"([{','.join(values.keys())})"
+        col_names = f"({','.join(values.keys())})"
         placeholders = f"VALUES ({','.join(['%s' for _ in values.values()])})"
         _values = [values[c] for c in values]
         insert_statement = f"INSERT INTO {table} {col_names} {placeholders}"
@@ -254,7 +254,7 @@ class IngestFeed:
             error_msg = str(err).replace("\n", " ")
             print(error_msg)
 
-    def run(self, data:TaskData,file_date:str, source_path: str | None = None, overwrite: bool | None = None) -> None:
+    def run(self, data:TaskData,source_path: str | None = None, overwrite: bool | None = None) -> None:
         task_meta = data["meta"].copy()
         task_meta["overridden_source_path"] = source_path
         source_path, pull_ts = self._source_path_and_ts(data, source_path)

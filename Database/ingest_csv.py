@@ -55,14 +55,13 @@ def readfixedwidth(fields:dict, filepath: str) -> TaskData:
 
     return dati
 
-
 def ingest_no_meta(db: str, table: str, data:TaskData):
     ingest = MassiveInsert(
         db=db,
         table=table
     )
 
-    res = ingest.run(data=data)
+    ingest.run(data=data)
 
 dati_csv = readcsv(fields=FIELDS,filepath= FILEPATH,delimiter=';')
 ingest_no_meta(db=DB, table=TABLE, data=dati_csv)
