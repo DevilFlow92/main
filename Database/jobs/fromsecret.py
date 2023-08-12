@@ -1,4 +1,5 @@
 import json
+import pymysql
 
 CONFIG = "C:\ScriptAdminRoot\Config"
 
@@ -13,4 +14,15 @@ def get_db_secret(secret) -> tuple:
     
     return host, user, password, db  
 
-#get_db_secret('devilflow_sakila')
+def authdb(secret:str) -> tuple:
+    host, user, password, db = get_db_secret(secret) 
+    conn = pymysql.connect(
+        host=host,
+        user=user,
+        password=password,
+        db=db,
+        charset='utf8mb4',
+        cursorclass=pymysql.cursors.DictCursor
+    )
+    cursor = conn.cursor()
+    return conn, cursor
