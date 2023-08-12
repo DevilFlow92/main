@@ -26,25 +26,11 @@ from .utils import _file_date, _file_time
 
 tz_rome = pendulum.timezone("Europe/Rome")  # type: ignore
 
-
 def from_swift_tag(values: list[str], key: str, index: int, sep: str = "/") -> str:
     for obj in values:
         if obj[0 : len(key)] == key:
             return obj.split(sep)[index]
     raise BusinessValueError(f"Tag SWIFT malformato: {str(values)}")
-
-
-def _eventually_rename_columns(msg: DataRow, schema: dict[str, FieldRule]) -> DataRow:
-    if all([fr.ingest_column is None for fr in schema.values()]):
-        return msg
-
-    out_row: DataRow = {}
-    for key, value in msg.items():
-        if schema[key].ingest_column is not None:
-            out_row[schema[key].ingest_column] = value  # type: ignore
-        else:
-            out_row[key] = value
-    return out_row
 
 #todo
 #class ReadExcelDelivery:
@@ -103,58 +89,56 @@ def _eventually_rename_columns(msg: DataRow, schema: dict[str, FieldRule]) -> Da
 #
 #        return output
 
-
-class ReadCsvDelivery():
-    """."""
-
+class MassiveInsert:
     def __init__(
         self,
-        rule: RuleDict,
-        headless: bool = False,
-        encoding: str = "utf-8",
-        skip_lines: int = 0,
-        allow_missing_cols: bool = False,
-        custom_nones: set[str] = set(),
-        options: dict[str, str] = {},
-        path_label: str = "path",
-        **kwargs: Any,
+        db: str,
+        table: str,
+        **kwargs: Any,    
     ) -> None:
-        self.rule = rule
-        self.headless = headless
-        self.encoding = encoding
-        self.skip_lines = skip_lines
-        self.allow_missing_cols = allow_missing_cols
-        self.custom_nones = custom_nones
-        self.options = options
-        self.path_label = path_label
+        self.db = db
+        self.table = table
         super().__init__(**kwargs)
-    def run(self, data: DataRow, encoding: Optional[str] = None) -> TaskData:  # type: ignore
-        filename = data["path"].name
-        for regex in self.rule:
-            if re.search(regex, filename) is not None:
-                if "-" not in self.rule[regex]:
-                    raise RuntimeError("La regola dei file csv deve avere un solo foglio '-'")
-                schema = self.rule[regex]["-"]
-                break
-        else:
-            error = f"Impossibile trovare una regola per il file {data['path']}"
-            self.logger.warning(error)
-            return {"data": [], "errors": [{"error": error, "source": data["path"]}], "meta": {}}
+    
+    def open(self) -> None:
+        self.dbconn, self.cursor = authdb(self.db)
 
-        output = ReadCsv(
-            fields=schema.keys(),  # type: ignore
-            headless=self.headless,
-            encoding=self.encoding,
-            skip_lines=self.skip_lines,
-            allow_missing_cols=self.allow_missing_cols,
-            custom_nones=self.custom_nones,
-            options=self.options,
-            path_label=self.path_label,
-        ).run(data=data, encoding=encoding)
+    def _write_row(self, values: DataRow) -> None:
+        table = self.table
+        col_names = f"([{'],['.join(values.keys())}])"
+        col_names = col_names.replace('[','').replace(']','')
+        placeholders = f"VALUES ({','.join(['%s' for _ in values.values()])})"
+        _values = [values[c] for c in values]
+        insert_statement = f"INSERT INTO {table} {col_names} {placeholders}"
+        self.cursor.execute(insert_statement, _values)
 
-        return output
+    def write_row(self, msg_:DataRow, task_meta: dict[str,Any]) ->None:
+        msg = msg_.copy()
+        try:
+            self._write_row(msg)
+        except SchemaError as err:
+            error_msg = str(err).replace("\n", " ")
+            print(error_msg)
+            raise err
+        
+    def run(self,data:TaskData) -> None:
+        task_meta = data["meta"].copy()
+        try:
+            self.open()
+            for msg_ in data["data"]:
+                self.write_row(msg_, task_meta)
+            self.dbconn.commit()
+        except Exception as ex:
+            self.dbconn.rollback()
+            raise ex
+        finally:
+            self.close()
 
+    def close(self) -> None:
+        self.dbconn.close()
+    
 
+'''
 class IngestFeed:
     """Salva dati letti da una sorgente su db.
 
@@ -178,20 +162,28 @@ class IngestFeed:
         table: str,
         provider: str = None,
         feed: str = None,
-        idetl: int = None,
-        overwrite: bool = False,       
+        idetl: int = None,   
+        overwrite: bool = False,    
         **kwargs: Any,
     ) -> None:
         self.db = db
         self.provider = provider
         self.feed = feed
-        self.overwrite = overwrite
         self.table = table
         self.idetl = idetl
+        self.overwrite = overwrite
         super().__init__(**kwargs)
 
     def open(self) -> None:
         self.dbconn, self.cursor = authdb(self.db)
 
-    def run(self, data:TaskData) -> None:
-       '''ToDo.'''
+    def _write_row(
+            self,
+            meta_id: int,
+
+    )
+
+    def run(self, data:TaskData, file_date:str) -> None:
+        if self.overwrite is True:
+            query = f'UPDATE %s set FlagAttivo = 0 WHERE '
+'''

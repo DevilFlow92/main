@@ -5,7 +5,7 @@ from jobs import (
     ReadFixedWidth
 ) 
 from types_db import DataRow, TaskData
-from feeds.tasks import IngestFeed
+from feeds.tasks import MassiveInsert
 
 FILEPATH = "C:\ScriptAdminRoot\Execute\main\Database\\banche.csv"
 FIELDS = [
@@ -56,8 +56,18 @@ def readfixedwidth(fields:dict, filepath: str) -> TaskData:
     return dati
 
 
-dati_csv = readcsv(FIELDS, FILEPATH,';')
-print(dati_csv)
+def ingest_no_meta(db: str, table: str, data:TaskData):
+    ingest = MassiveInsert(
+        db=db,
+        table=table
+    )
+
+    res = ingest.run(data=data)
+
+dati_csv = readcsv(fields=FIELDS,filepath= FILEPATH,delimiter=';')
+ingest_no_meta(db=DB, table=TABLE, data=dati_csv)
+
+
 '''ToDo.'''
 #ingest = IngestFeed(
 #    db=DB,
