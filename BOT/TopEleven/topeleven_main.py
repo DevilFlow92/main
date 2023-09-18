@@ -65,6 +65,7 @@ def farm_blues():
         watch_video()
         plus_blues()
         time.sleep(3)
+
 ########## End Of Farming Kits #####
 
 ########## Training ##########
