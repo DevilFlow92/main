@@ -26,6 +26,14 @@ def move_and_click(x:int, y:int,doubleclick:bool=False, timesleep:bool=True):
     if timesleep is True:
         time.sleep(2)
 
+def find_mute():
+    '''To Do. Mute image recognition'''
+    move_and_click(80,79) #disable audio
+
+def find_x():
+    '''To Do. X image recognition'''
+    move_and_click(1855,62) #close ad
+
 ####### Farming Kits ############
 def plus_green():
     move_and_click(1274,40)
@@ -36,33 +44,34 @@ def plus_reds():
 def plus_blues():
     move_and_click(1479,40)
 
-def watch_video():
+def watch_video_farm():
     move_and_click(1772,241) #click for video
-    move_and_click(80,79) #disable audio
-    time.sleep(40) #wait video
-    move_and_click(1855,62) #close ad
+    find_mute()
+    time.sleep(35) #wait video
+    find_x()
+    
 
 def farm_greens():
     plus_green()
-    time.sleep(20)
+    time.sleep(10)
     for i in range(25):
-        watch_video()
+        watch_video_farm()
         plus_green()
         time.sleep(3)
 
 def farm_reds():
     plus_reds()
-    time.sleep(20)
+    time.sleep(10)
     for i in range(5):
-        watch_video()
+        watch_video_farm()
         plus_reds()
         time.sleep(3)
 
 def farm_blues():
     plus_blues()
-    time.sleep(20)
+    time.sleep(10)
     for i in range(5):
-        watch_video()
+        watch_video_farm()
         plus_blues()
         time.sleep(3)
 
