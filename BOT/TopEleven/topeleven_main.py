@@ -7,6 +7,7 @@ parser.add_argument("--GreenFarm", action="store_true",help="It will farm 25 gre
 parser.add_argument("--Training", action="store_true",help="It will do the early morning training of your players.")
 parser.add_argument("--BlueFarm", action="store_true",help="It will farm 5 blue kits watching video ads.")
 parser.add_argument("--RedFarm", action="store_true", help="It will farm 5 red kits watching video ads.")
+parser.add_argument("--SpamInvites", action="store_true",help="It will Spam invites to other managers in your association")
 args = parser.parse_args()
 
 def getposition_manually():
@@ -58,6 +59,7 @@ def farm_greens():
         watch_video_farm()
         plus_green()
         time.sleep(3)
+        i+=1
 
 def farm_reds():
     plus_reds()
@@ -66,6 +68,7 @@ def farm_reds():
         watch_video_farm()
         plus_reds()
         time.sleep(3)
+        i+=1
 
 def farm_blues():
     plus_blues()
@@ -74,6 +77,7 @@ def farm_blues():
         watch_video_farm()
         plus_blues()
         time.sleep(3)
+        i+=1
 
 ########## End Of Farming Kits #####
 
@@ -84,6 +88,7 @@ def select_players():
     for i in range(10):
         move_and_click(x,y,timesleep=False)
         y+= 80
+        i+=1
     pyautogui.scroll(-100)
     time.sleep(1)
     move_and_click(x,875,timesleep=False)
@@ -140,6 +145,26 @@ def training():
     #routine_riserve(videox2=True)
 ####### End Of Training #######
 
+
+def spam_invites():
+    move_and_click(88,82) #menu
+    move_and_click(47,836) #associazioni
+    move_and_click(214,743) #vedi
+    move_and_click(1443,1030) #cerca membri
+    time.sleep(3)
+    move_and_click(438,338) #filtro stella min
+    move_and_click(204,589) #seleziona 5 stelle
+    move_and_click(782,340) #filtro stella max
+    move_and_click(565,496) #seleziona 6 stelle
+    move_and_click(1713,338) #filtro moltiplicatore
+    move_and_click(1711,634) #seleziona x3
+    move_and_click(922,155) #refresh
+    time.sleep(1)
+    for i in range(1,50):
+        move_and_click(1639,491)
+        i+=1
+
+
 if __name__ == "__main__":
     if args.MouseMonitoring:
         getposition_manually()
@@ -151,3 +176,5 @@ if __name__ == "__main__":
         farm_blues()
     if args.RedFarm:
         farm_reds()
+    if args.SpamInvites:
+        spam_invites()
