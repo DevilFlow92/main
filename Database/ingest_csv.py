@@ -12,8 +12,8 @@ FIELDS = [
     "Codice",
     "Descrizione"
 ]
-DB = "devilflow_main"
-TABLE = "d_banca"
+DB = "bande"
+TABLE = "t_esterni"
 
 #FILEPATH = "C:\ScriptAdminRoot\Execute\main\Database\\fixedwidth.txt"
 #FIELDS = {

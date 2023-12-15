@@ -145,7 +145,6 @@ def training():
     #routine_riserve(videox2=True)
 ####### End Of Training #######
 
-
 def spam_invites():
     move_and_click(88,82) #menu
     move_and_click(47,836) #associazioni

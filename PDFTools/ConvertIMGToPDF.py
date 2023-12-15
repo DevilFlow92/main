@@ -14,7 +14,7 @@ def convertImg2PDF(inputfile):
     im2 = im1.convert('RGB')
     im2.save(outputpdf)
 
-inputfile = sys.argv[1]
+#inputfile = sys.argv[1]
 
 if __name__ == "__main__":    
         try:
