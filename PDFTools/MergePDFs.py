@@ -1,16 +1,21 @@
-import sys
-import os
+import sys, os, argparse
 import PyPDF2
 
-# path = "C:\\Users\\lorenzo.fiori\\Documents\\StampeCappiello"
-# outputfile = "prova.pdf"
-
+parser = argparse.ArgumentParser(description="Merge PDFs into one")
+parser.add_argument("-path",
+                    action="store",
+                    help="Path of PDFs to merge",                    
+)
+parser.add_argument(
+    "-outputfilename",
+    action="store",
+    help="Name of PDF to obtain",
+)
+args = parser.parse_args()
 
 def pdfMerge(path, outputfile):
     #userpdflocation=input('Folder path to PDFs that need merging: ')
-    userpdflocation = path
-    os.chdir(userpdflocation)
-
+    os.chdir(path)
     #userfilename=input('What sould i call the file? ')
     userfilename = outputfile
     pdf2merge = []
@@ -19,27 +24,29 @@ def pdfMerge(path, outputfile):
             # print(inputfile)
             pdf2merge.append(inputfile)
 
-    pdfWriter = PyPDF2.PdfFileWriter()
+    pdfWriter = PyPDF2.PdfWriter()
 
     for filename in pdf2merge:
         #print(filename)
         pdfFileObj = open(filename, 'rb')
-        pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+        pdfReader = PyPDF2.PdfReader(pdfFileObj)
 
-        for pageNum in range(pdfReader.numPages):
-            pageObj = pdfReader.getPage(pageNum)
-            pdfWriter.addPage(pageObj)
+        for pageNum in range(len(pdfReader.pages)):
+            pageObj = pdfReader.pages[pageNum]
+            pdfWriter.add_page(pageObj)
 
     pdfOutput = open(userfilename, 'wb')
     pdfWriter.write(pdfOutput)
     pdfOutput.close()
+    pdfFileObj.close()
+   
 
-try:
-    path = sys.argv[1]
-    outputfile = sys.argv[2]
-    pdfMerge(path, outputfile)
-    print("OK")
-except:
-    print("Unexpected error:",sys.exc_info()[0])
-    raise
+
+if __name__ == "__main__":
+    try:
+        pdfMerge(path=args.path,outputfile=args.outputfilename)
+        print("OK")
+    except:
+        print("Unexpected error:",sys.exc_info()[0])
+        raise
 
