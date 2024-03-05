@@ -7,13 +7,17 @@ from jobs import (
 from types_db import DataRow, TaskData
 from feeds.tasks import MassiveInsert
 
-FILEPATH = "C:\ScriptAdminRoot\Execute\main\Database\\banche.csv"
+FILEPATH = "C:\ScriptAdminRoot\Execute\main\Database\\flussi2023.csv"
 FIELDS = [
-    "Codice",
-    "Descrizione"
+    "DataRegistrazione",
+    "DescrizioneOperazione",
+    "Note",
+    "IdVoceContabilita",
+    "Importo",
+    "CodNaturaFlusso"
 ]
-DB = "bande"
-TABLE = "t_esterni"
+DB = "devilflow_bande"
+TABLE = "T_FlussoCassa"
 
 #FILEPATH = "C:\ScriptAdminRoot\Execute\main\Database\\fixedwidth.txt"
 #FIELDS = {
