@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any, Optional, cast, Union
 
 import pendulum
 
@@ -7,9 +7,10 @@ from jobs.fromsecret import authdb
 from types_db import (
     BusinessValueError,
     DataRow,
-    TaskData
+    TaskData,
+    ErrorRow
 )
-from validation import SchemaError
+from validation import SchemaError, Schema
 from .utils import _file_date
 
 tz_rome = pendulum.timezone("Europe/Rome")  # type: ignore
@@ -280,3 +281,42 @@ class IngestFeed:
         finally:
             self.close()
 
+class ReadDB:
+    def __init__(
+        self,
+        db: str,
+        #schema: Schema,
+        query: str,
+        **kwargs: Any,    
+    ) -> TaskData:
+        self.db = db
+        #self.schema = schema
+        self.query = query
+        super().__init__(**kwargs)
+
+    def open(self) -> None:
+        self.dbconn, self.cursor = authdb(self.db)
+
+    def close(self) -> None:
+        self.dbconn.close()
+    
+    def run(self) -> TaskData:
+        output, errors = [], []
+        self.open()
+        self.cursor.execute(self.query)
+        for row in self.cursor.fetchall():
+            output.append(cast(DataRow, row))
+        self.close()
+
+        return {
+            "data": output,
+            "errors": errors,
+            "meta": {
+                "query": self.query,
+                "isEmpty": len(output) == 0,
+                "hasErrors": len(errors) > 0,
+            },
+        }
+
+    def close(self) -> None:
+        self.dbconn.close()

@@ -1,19 +1,18 @@
 import csv
 import re
-from datetime import timedelta
-from typing import Any, Iterator, Optional, Set, cast
 
+from typing import Any, Iterator, Optional, Set, cast
 from types_db import DataRow, ErrorRow, TaskData
 from logger import LogLevel
 
-def _apply_skip_lines(skip_lines, csvfile) -> Iterator[str]:  # type: ignore
+def _apply_skip_lines(skip_lines, csvfile) -> Iterator[str]: 
     for _ in range(skip_lines):
         try:
             csvfile.readline()
         except StopIteration:
             raise ValueError(f"Not enough lines to skip (skip_lines={skip_lines})")
 
-    return csvfile  # type: ignore
+    return csvfile
 
 class ReadCsv:
     """Legge i dati contenuti in un file CSV.

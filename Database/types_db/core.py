@@ -5,6 +5,7 @@ from typing import Union
 from pydantic import BaseModel, root_validator
 
 Json = dict[str, "Json"] | list["Json"] | str | int | float | bool | None
+
 JsonRes = dict[
     str,
     Union[

@@ -1,5 +1,6 @@
 import json
 import pymysql
+from typing import cast
 
 CONFIG = "C:\ScriptAdminRoot\Config"
 
@@ -26,3 +27,23 @@ def authdb(secret:str) -> tuple:
     )
     cursor = conn.cursor()
     return conn, cursor
+
+def get_ftp_secret(secret):
+    jsonpath = f'{CONFIG}/ftps.json'
+    f = open(jsonpath)
+    data = json.load(f)
+    return data[secret]
+
+def get_dbload_conf(secret) -> tuple:
+    jsonpath = f'{CONFIG}/load_db.json'
+    f = open(jsonpath)
+    data = json.load(f)
+    gdfolder = data[secret]['GDRIVEFOLDER']
+    sourcepath = data[secret]['SOURCEPATH']
+    db = data[secret]['DB']
+    query = data[secret]['QUERY']
+    fields = data[secret]['FIELDS']
+    fields = fields.split(',')
+    filename = data[secret]['FILENAME']
+
+    return (gdfolder, sourcepath, db, query, fields, filename)
