@@ -1,7 +1,6 @@
 {
   "name": "tutorial_blog_easypeasy",
   "version": "0.1.0",
-  "homepage": "https://https://github.com/DevilFlow92/main/tree/main/ReactProject/tutorial_blog_easypeasy",
   "private": true,
   "dependencies": {
     "axios": "^1.6.8",
