@@ -17,6 +17,12 @@
       "title": "Test edit",
       "datetime": "April 28, 2024 10:00:37 AM",
       "body": "Testing edit after clean code (handleEdit into EditPost.js)"
+    },
+    {
+      "id": "31111",
+      "title": "Ciao",
+      "datetime": "April 29, 2024 6:48:32 PM",
+      "body": "Ciao Mondo bellissimo"
     }
   ]
 }

@@ -1,14 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Oct 23 10:29:14 2019
-
-@author: andrea.padricelli
-"""
-
 import PyPDF2
 import re
 import sys
-
 
 if not sys.warnoptions:
     import warnings
